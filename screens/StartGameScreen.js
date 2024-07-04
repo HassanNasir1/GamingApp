@@ -1,4 +1,14 @@
-import { View, TextInput, StyleSheet, Alert, Text } from "react-native";
+import {
+	View,
+	TextInput,
+	StyleSheet,
+	Alert,
+	Text,
+	useWindowDimensions,
+	KeyboardAvoidingView, //its for IOS mainly
+	ScrollView, //its for IOS mainly
+} from "react-native";
+
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { useState } from "react";
 import Colors from "../utils/colors";
@@ -9,6 +19,7 @@ import InstructionText from "../components/ui/InstructionText";
 const StartGameScreen = ({ pickNumber }) => {
 	const [enteredNumber, setEnteredNumber] = useState("");
 
+	const { width, height } = useWindowDimensions();
 	const numberInputHandler = (enteredText) => {
 		setEnteredNumber(enteredText);
 	};
@@ -28,40 +39,53 @@ const StartGameScreen = ({ pickNumber }) => {
 		pickNumber(chosenNumber);
 	};
 
+	const marginTopDistance = height < 400 ? 30 : 100;
+
 	return (
-		<View style={styles.rootContainer}>
-			<Title>Opponent's Guess</Title>
-			<Card>
-				<InstructionText>Enter a Number</InstructionText>
-				<TextInput
-					style={styles.numberInput}
-					keyboardType="number-pad"
-					maxLength={2}
-					//below props are not needed but still I want to show it can be done
-					// autoCapitalize="none"
-					// autoCorrect={false}
-					onChangeText={numberInputHandler}
-					value={enteredNumber}
-				/>
-				<View style={styles.buttonsContainer}>
-					<View style={styles.buttonContainer}>
-						<PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
-					</View>
-					<View style={styles.buttonContainer}>
-						<PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
-					</View>
+		<ScrollView style={styles.screen}>
+			<KeyboardAvoidingView style={styles.screen} behavior="position">
+				<View style={[styles.rootContainer, { marginTop: marginTopDistance }]}>
+					<Title>Opponent's Guess</Title>
+					<Card>
+						<InstructionText>Enter a Number</InstructionText>
+						<TextInput
+							style={styles.numberInput}
+							keyboardType="number-pad"
+							maxLength={2}
+							//below props are not needed but still I want to show it can be done
+							// autoCapitalize="none"
+							// autoCorrect={false}
+							onChangeText={numberInputHandler}
+							value={enteredNumber}
+						/>
+						<View style={styles.buttonsContainer}>
+							<View style={styles.buttonContainer}>
+								<PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
+							</View>
+							<View style={styles.buttonContainer}>
+								<PrimaryButton onPress={confirmInputHandler}>
+									Confirm
+								</PrimaryButton>
+							</View>
+						</View>
+					</Card>
 				</View>
-			</Card>
-		</View>
+			</KeyboardAvoidingView>
+		</ScrollView>
 	);
 };
 
 export default StartGameScreen;
 
+//const deviceHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
+	screen: {
+		flex: 1,
+	},
 	rootContainer: {
 		flex: 1,
-		marginTop: 100,
+		// marginTop: deviceHeight < 400 ? 30 : 100,
 		alignItems: "center",
 	},
 
